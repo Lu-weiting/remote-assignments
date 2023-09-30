@@ -11,6 +11,6 @@ function requestSync(url) {
     let executionTime = endTime - startTime;
     console.log(executionTime + " ms");
 }
-requestSync(url) // would print out the execution time
+requestSync(url)
 requestSync(url)
 requestSync(url)
