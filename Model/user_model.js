@@ -12,8 +12,11 @@ module.exports = {
             if (!password || await tool.isValidPassword(password) < 3) return res.status(400).json({ error: 'Client error: password format' });
             const hashPassword = await tool.generateHashSync(password);
             const GMTtime = await tool.getCurrentGMTTimeString();
-            const signupQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,?)';
-            const [results] = await connection.execute(signupQuery, [name, email, hashPassword, GMTtime]);
+            const checkQuery = 'SELECT * FROM user WHERE email = ?';
+            const insertQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,?)';
+            const [checkResult] = await connection.execute(checkQuery,[email]);
+            if (checkResult.length !== 0) return res.status(409).json({ error: 'email existed' });
+            const [results] = await connection.execute(insertQuery, [name, email, hashPassword, GMTtime]);
             const response = {
                 data: {
                     user: {
@@ -32,6 +35,32 @@ module.exports = {
             console.log('connection release');
         }
 
+    },
+    query: async(res,userId)=>{
+        try{
+            const connection = await db;
+            const checkQuery = 'SELECT * FROM user WHERE id = ?';
+            const [checkResult] = await connection.execute(checkQuery,[userId]);
+            if (checkResult.length === 0) return res.status(403).json({ error: 'user not exist' });
+            const response = {
+                data: {
+                    user: {
+                        id: checkResult[0].id,
+                        name: checkResult[0].name,
+                        email: checkResult[0].email,
+                    },
+                    "request-date": checkResult[0].created_at
+                }
+            };
+            return response;
+
+            
+        } catch (error) {
+            console.log("db problem");
+            console.error(error);
+        } finally {
+            console.log('connection release');
+        }
     }
 
 

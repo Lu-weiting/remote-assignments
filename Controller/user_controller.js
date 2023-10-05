@@ -8,5 +8,14 @@ module.exports = {
         } catch (error) {
             console.log(error)
         }
+    },
+    query: async(req,res)=>{
+        try {
+            const userId = req.query.id;
+            const response = await user.query(res, userId);
+            res.status(200).json(response);
+        } catch (error) {
+            console.log(error)
+        }
     }
 }
