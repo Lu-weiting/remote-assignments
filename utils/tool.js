@@ -30,17 +30,17 @@ module.exports = {
     confirmPassword: async (input, real) => {
         return bcrypt.compareSync(input, real);
     },
-    getCurrentGMTTimeString: async () => {
+    getCurrentGMTTimeString: async (timestamp) => {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        const currentDate = new Date();
-        const dayOfWeek = currentDate.toLocaleDateString('en', { weekday: 'short' });
-        const month = months[currentDate.getUTCMonth()];
-        const day = currentDate.getUTCDate();
-        const year = currentDate.getUTCFullYear();
-        const hours = currentDate.getUTCHours().toString().padStart(2, '0');
-        const minutes = currentDate.getUTCMinutes().toString().padStart(2, '0');
-        const seconds = currentDate.getUTCSeconds().toString().padStart(2, '0');
+        const dateObject = new Date(timestamp);
+        const dayOfWeek = dateObject.toLocaleDateString('en', { weekday: 'short' });
+        const month = months[dateObject.getUTCMonth()];
+        const day = dateObject.getUTCDate();
+        const year = dateObject.getUTCFullYear();
+        const hours = dateObject.getUTCHours().toString().padStart(2, '0');
+        const minutes = dateObject.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = dateObject.getUTCSeconds().toString().padStart(2, '0');
 
         return `${dayOfWeek}, ${day} ${month} ${year} ${hours}:${minutes}:${seconds} GMT`;
     }

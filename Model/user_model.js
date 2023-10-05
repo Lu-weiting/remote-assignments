@@ -11,12 +11,13 @@ module.exports = {
             if (!email || !emailRegex.test(email)) return res.status(400).json({ error: 'Client error: email format' });
             if (!password || await tool.isValidPassword(password) < 3) return res.status(400).json({ error: 'Client error: password format' });
             const hashPassword = await tool.generateHashSync(password);
-            const GMTtime = await tool.getCurrentGMTTimeString();
+            const date = new Date();
+            const GMTtime = await tool.getCurrentGMTTimeString(date);
             const checkQuery = 'SELECT * FROM user WHERE email = ?';
-            const insertQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,?)';
+            const insertQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,NOW())';
             const [checkResult] = await connection.execute(checkQuery,[email]);
             if (checkResult.length !== 0) return res.status(409).json({ error: 'email existed' });
-            const [results] = await connection.execute(insertQuery, [name, email, hashPassword, GMTtime]);
+            const [results] = await connection.execute(insertQuery, [name, email, hashPassword]);
             const response = {
                 data: {
                     user: {
@@ -49,7 +50,7 @@ module.exports = {
                         name: checkResult[0].name,
                         email: checkResult[0].email,
                     },
-                    "request-date": checkResult[0].created_at
+                    "request-date": await tool.getCurrentGMTTimeString(checkResult[0].created_at)
                 }
             };
             return response;
