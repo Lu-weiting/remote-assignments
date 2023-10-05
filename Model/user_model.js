@@ -1,6 +1,6 @@
 const db = require('../utils/db').connectionPromise;
 const tool = require('../utils/tool');
-
+//
 module.exports = {
     signUp: async (res, name, email, password) => {
         try {
