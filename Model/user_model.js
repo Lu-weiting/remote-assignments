@@ -9,7 +9,7 @@ module.exports = {
             if (!name || !nameRegex.test(name)) return res.status(400).json({ error: 'Client error: name format' });
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!email || !emailRegex.test(email)) return res.status(400).json({ error: 'Client error: email format' });
-            if (!password || await tool.isValidPassword(password) !== 3) return res.status(400).json({ error: 'Client error: password format' });
+            if (!password || await tool.isValidPassword(password) < 3) return res.status(400).json({ error: 'Client error: password format' });
             const hashPassword = await tool.generateHashSync(password);
             const GMTtime = await tool.getCurrentGMTTimeString();
             const signupQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,?)';
