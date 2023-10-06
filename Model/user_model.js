@@ -2,7 +2,7 @@ const db = require('../utils/db').connectionPromise;
 const tool = require('../utils/tool');
 //
 module.exports = {
-    signUp: async (res, name, email, password) => {
+    signUp: async (res, name, email, password,requestDate) => {
         try {
             const connection = await db;
             const nameRegex = /^[a-zA-Z0-9]+$/;
@@ -11,8 +11,8 @@ module.exports = {
             if (!email || !emailRegex.test(email)) return res.status(400).json({ error: 'Client error: email format' });
             if (!password || await tool.isValidPassword(password) < 3) return res.status(400).json({ error: 'Client error: password format' });
             const hashPassword = await tool.generateHashSync(password);
-            const date = new Date();
-            const GMTtime = await tool.getCurrentGMTTimeString(date);
+            // const date = new Date();
+            // const GMTtime = await tool.getCurrentGMTTimeString(date);
             const checkQuery = 'SELECT * FROM user WHERE email = ?';
             const insertQuery = 'INSERT INTO user(name, email, password,created_at) VALUES(?,?,?,NOW())';
             const [checkResult] = await connection.execute(checkQuery,[email]);
@@ -25,7 +25,7 @@ module.exports = {
                         name: name,
                         email: email,
                     },
-                    "request-date": GMTtime
+                    "request-date": requestDate
                 }
             };
             return response;
@@ -37,7 +37,7 @@ module.exports = {
         }
 
     },
-    query: async(res,userId)=>{
+    query: async(res,userId,requestDate)=>{
         try{
             const connection = await db;
             const checkQuery = 'SELECT * FROM user WHERE id = ?';
@@ -50,7 +50,7 @@ module.exports = {
                         name: checkResult[0].name,
                         email: checkResult[0].email,
                     },
-                    "request-date": await tool.getCurrentGMTTimeString(checkResult[0].created_at)
+                    "request-date": requestDate
                 }
             };
             return response;
