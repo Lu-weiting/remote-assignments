@@ -5,9 +5,17 @@ import getPostData from './getPostData';
 const PostPage = () => {
   const postData = getPostData();
   const [isLiked, setIsLiked] = React.useState(false);
-
+  const [likeCount,setLikeCount] = React.useState(0);
   const handleClick = () => {
     setIsLiked((preLike) => !preLike);
+    setLikeCount((preCount)=>{
+      if(isLiked){
+        preCount-=1;
+      }else{
+        preCount+=1;
+      }
+      return preCount;
+    });
   };
   React.useEffect(()=>{
       console.log("re-render");
@@ -21,13 +29,14 @@ const PostPage = () => {
             <p key={index} className="mt-4 text-gray-600 text-20px">{p}</p>
           ))}
           <p className="mt-4 text-12px text-gray-888">{post.date}</p>
-          {console.log(isLiked)}
           <button
             className={`${isLiked ? 'bg-red-400' : 'bg-#d1d5db'} text-gray-600 px-4 py-2 rounded-xl border-2 border-solid ${isLiked ? 'border-BF4F74' : 'border-cccccc'} transition-colors duration-300 hover:bg-red-400`}
             onClick={handleClick}
           >
             Like
           </button>
+          <span>{likeCount}</span>
+          {console.log(likeCount)}
         </div>
       ))}
     </div>

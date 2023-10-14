@@ -7,13 +7,18 @@ import { PostContainer, PostCard, PostTitle, PostContent, PostDate, PostLikeBtn 
 const PostPage = () => {
   const postData = getPostData();
   const [isLiked, setIsLiked] = React.useState(false);
-  // React.useEffect(()=>{
-  //   console.log("re-render");
-  // },[isLiked])
-
+  const [likeCount,setLikeCount] = React.useState(0);
   const handleClick = () => {
-    setIsLiked((preLike) => !preLike)
-  }
+    setIsLiked((preLike) => !preLike);
+    setLikeCount((preCount)=>{
+      if(isLiked){
+        preCount-=1;
+      }else{
+        preCount+=1;
+      }
+      return preCount;
+    });
+  };
   return (
     <PostContainer>
       {postData.map(post => (
@@ -24,6 +29,7 @@ const PostPage = () => {
           ))}
           <PostDate>{post.date}</PostDate>
           <PostLikeBtn isLiked={isLiked} onClick={handleClick} >Like</PostLikeBtn>
+          <span>{likeCount}</span>
         </PostCard>
       ))}
     </PostContainer>
