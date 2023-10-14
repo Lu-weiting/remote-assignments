@@ -43,6 +43,10 @@ module.exports = {
         const seconds = dateObject.getUTCSeconds().toString().padStart(2, '0');
 
         return `${dayOfWeek}, ${day} ${month} ${year} ${hours}:${minutes}:${seconds} GMT`;
+    },
+    parseGMTString: async(gmtString)=>{
+        const dateObject = new Date(gmtString);
+        return dateObject.toISOString().slice(0, 19).replace('T', ' ');
     }
 
 }
